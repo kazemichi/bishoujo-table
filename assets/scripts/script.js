@@ -6,138 +6,134 @@
 
 import { domToWebp } from 'https://unpkg.com/modern-screenshot'
 
-$('span.export-screenshot').click(() => {
-    domToWebp(document.querySelector('div.container'), {
-        scale: 1.5 // 放大倍数
-    }).then(dataUrl => {
-        const link = document.createElement('a');
-        link.download = 'bishoujo-table.webp'; // 导出文件名
-        link.href = dataUrl;
-        link.click();
-    })
-})
+document.querySelector('span.export-screenshot').addEventListener('click', async () => {
+    try {
+        const container = document.querySelector('div.container');
+        const dataUrl = await domToWebp(container, { scale: 1.5 });
 
+        const link = document.createElement('a');
+        link.download = 'bishoujo-table.webp';
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error('导出失败:', error);
+        alert('图片导出失败，请重试');
+    }
+});
 
 /**
  * *加载JSON数据并生成表格*
 */
+const TableManager = (() => {
+    const state = {
+        table_frame: null,
+        character_hs: null,
+        currentLang: 'jp'
+    };
 
-// 使用Promise封装AJAX请求
-function loadJSON(path) {
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            url: path,
-            dataType: 'json',
-            success: resolve,
-            error: reject
-        });
-    });
-}
+    // 缓存DOM元素
+    const elements = {
+        table: document.querySelector('table.bishoujo-table'),
+        langSwitch: document.querySelector('.lang-switch')
+    };
 
-// 初始化数据
-let table_frame, character_hs;
-let row, column, characters_num, column_num;
+    // 加载JSON数据
+    async function loadJSON(url) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`加载失败: ${url}`);
+        return response.json();
+    }
 
-// 使用Promise.all同时加载多个JSON
-Promise.all([
-    loadJSON('table_frame.json'),
-    loadJSON('character_hs.json')
-]).then(([frameData, hsData]) => {
-    table_frame = frameData;
-    character_hs = hsData;
-    
-    row = table_frame.row_characters;
-    column = table_frame.col_types;
-    characters_num = row.length;
-    column_num = column.length;
-    
-    // 默认加载日语
-    loadData('jp');
-    
-    // 绑定语言切换事件
-    const switcher = document.querySelector('.lang-switch');
-    switcher.addEventListener('click', handleLangSwitch);
-}).catch(console.error);
+    // 初始化表格
+    async function init() {
+        try {
+            const [frameData, hsData] = await Promise.all([
+                loadJSON('table_frame.json'),
+                loadJSON('character_hs.json')
+            ]);
 
-// 创建文档片段优化DOM操作
-function createTableFragment(lang) {
-    const fragment = document.createDocumentFragment();
-    
-    // 创建表头行
-    const headerRow1 = document.createElement('tr');
-    const headerRow2 = document.createElement('tr');
-    
-    // 添加空单元格
-    headerRow1.innerHTML = '<td></td>';
-    headerRow2.innerHTML = '<td></td>';
-    
-    // 添加角色头像和名称
-    row.forEach(item => {
-        const avatarCell = item.tachie 
-            ? `<td><img class="tachie-box" src="assets/tachie/${item.tachie}" alt=""/></td>`
-            : '<td></td>';
-        
-        headerRow1.innerHTML += avatarCell;
-        headerRow2.innerHTML += `<td>${item[lang]}</td>`;
-    });
-    
-    fragment.appendChild(headerRow1);
-    fragment.appendChild(headerRow2);
-    
-    // 添加数据行
-    column.forEach(colItem => {
-        const dataRow = document.createElement('tr');
-        dataRow.classList.add('td-spacing');
-        
-        const typeName = colItem[lang];
-        const jpKey = colItem['jp'];
-        
-        // 添加类型名称
-        dataRow.innerHTML = `<td>${typeName}</td>`;
-        
-        if (jpKey) {
-            row.forEach(charItem => {
-                const jpName = charItem.jp;
-                const cellContent = character_hs[jpKey]?.[jpName] === 1 
-                    ? '<td class="dot">●</td>' 
-                    : '<td></td>';
-                
-                dataRow.innerHTML += cellContent;
+            Object.assign(state, {
+                table_frame: frameData,
+                character_hs: hsData
             });
-        } else {
-            dataRow.innerHTML += `<td class="blank"></td>`;
+
+            renderTable();
+            setupEventListeners();
+        } catch (error) {
+            console.error('初始化失败:', error);
+            elements.table.innerHTML = `<tr><td colspan="100">数据加载失败，请刷新页面</td></tr>`;
         }
-        
-        fragment.appendChild(dataRow);
-    });
-    
-    return fragment;
-}
-
-function loadData(lang) {
-    const table = document.querySelector('table.bishoujo-table');
-    
-    // 清空表格
-    while (table.firstChild) {
-        table.removeChild(table.firstChild);
     }
-    
-    // 添加新内容
-    table.appendChild(createTableFragment(lang));
-}
 
-function handleLangSwitch() {
-    const switcher = document.querySelector('.lang-switch');
-    const isCN = switcher.classList.contains('cn');
-    
+    // 渲染表格
+    function renderTable() {
+        const { row_characters: rows, col_types: columns } = state.table_frame;
+        const { character_hs, currentLang } = state;
+
+        let tableHTML = `
+            <tr>
+                <td></td>
+                ${rows.map(char => char.tachie 
+                    ? `<td><img class="tachie-box" src="assets/tachie/${char.tachie}" alt="${char.jp}头像"></td>` 
+                    : '<td></td>'
+                ).join('')}
+            </tr>
+            <tr>
+                <td></td>
+                ${rows.map(char => `<td>${char[currentLang]}</td>`).join('')}
+            </tr>
+        `;
+
+        columns.forEach(col => {
+            const jpKey = col.jp;
+            tableHTML += `
+                <tr class="td-spacing">
+                    <td>${col[currentLang]}</td>
+            `;
+
+            if (jpKey && character_hs[jpKey]) {
+                const colData = character_hs[jpKey];
+                tableHTML += rows.map(char => 
+                    colData[char.jp] === 1 
+                        ? '<td class="dot">●</td>' 
+                        : '<td></td>'
+                ).join('');
+            } else {
+                tableHTML += rows.map(() => '<td></td>').join('');
+            }
+
+            tableHTML += '</tr>';
+        });
+
+        elements.table.innerHTML = tableHTML;
+    }
+
     // 切换语言
-    if (isCN) {
-        switcher.classList.remove('cn');
-        switcher.innerHTML = '<img class="svg-icon" src="assets/icon/lang-switch.svg" alt=""/>切换中文';
-        loadData('jp');
-    } else {
-        switcher.classList.add('cn');
-        switcher.innerHTML = '<img class="svg-icon" src="assets/icon/lang-switch.svg" alt=""/>切换日文';
-        loadData('cn');
+    function switchLanguage() {
+        state.currentLang = state.currentLang === 'jp' ? 'cn' : 'jp';
+        renderTable();
+        updateSwitchText();
     }
-}
+
+    // 更新切换按钮文本
+    function updateSwitchText() {
+        const isCN = state.currentLang === 'cn';
+        elements.langSwitch.classList.toggle('cn', isCN);
+        elements.langSwitch.innerHTML = `
+            <img class="svg-icon" src="assets/icons/lang-switch.svg" alt="语言切换">
+            ${isCN ? '切换日文' : '切换中文'}
+        `;
+    }
+
+    // 事件监听
+    function setupEventListeners() {
+        elements.langSwitch.addEventListener('click', switchLanguage);
+    }
+
+    return { init };
+})();
+
+// 初始化表格管理器
+TableManager.init();

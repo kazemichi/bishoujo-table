@@ -13,3 +13,5 @@
 ~~[FileSaver.js](https://github.com/eligrey/FileSaver.js)~~
 
 [modern-screenshot](https://github.com/qq15725/modern-screenshot)
+
+~~[snapDOM](https://github.com/zumerlab/snapdom)~~
