@@ -6,7 +6,7 @@
 
 **Dependencies**
 
-[jQuery](https://jquery.com)
+~~[jQuery](https://jquery.com)~~
 
 ~~[dom-to-image-more](https://github.com/1904labs/dom-to-image-more)~~
 
