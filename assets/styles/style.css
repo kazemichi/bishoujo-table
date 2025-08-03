@@ -90,7 +90,7 @@ td {
 /* font-face */
 @font-face {
     font-family: 'SarasaGothic';
-    src: url('../fonts/SarasaGothicSC-Regular.ttf');
+    src: url('../fonts/SarasaGothicSC-Regular.woff2');
 }
 
 /* 滚动条 */

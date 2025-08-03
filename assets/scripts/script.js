@@ -76,7 +76,7 @@ const TableManager = (() => {
             <tr>
                 <td></td>
                 ${rows.map(char => char.tachie 
-                    ? `<td><img class="tachie-box" src="assets/tachie/${char.tachie}" alt="${char.jp}头像"></td>` 
+                    ? `<td><img class="tachie-box" src="assets/tachie/${char.tachie}" alt="${char.jp}"></td>` 
                     : '<td></td>'
                 ).join('')}
             </tr>
