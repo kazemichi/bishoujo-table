@@ -9,7 +9,7 @@ html {
 }
 
 html {
-    font-size: 16px;
+    font-size: 15px;
 }
 
 body {
@@ -20,9 +20,12 @@ body {
 td {
     max-width: 120px;
     min-width: 120px;
-    font-weight: normal;
+    font-size: 17px;
+    -webkit-text-stroke: 0.2px #333;
+    letter-spacing: 0.5px;
     text-align: center;
-    font-family: 'SarasaGothic';
+    font-family: '秋水書体';
+    line-height: 1.3rem;
 }
 
 .blank {
@@ -89,8 +92,8 @@ td {
 
 /* font-face */
 @font-face {
-    font-family: 'SarasaGothic';
-    src: url('../fonts/SarasaGothicSC-Regular.woff2');
+    font-family: '秋水書体';
+    src: url('../fonts/QiushuiShotai.woff2');
 }
 
 /* 滚动条 */
