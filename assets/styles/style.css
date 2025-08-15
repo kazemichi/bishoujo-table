@@ -9,7 +9,7 @@ html {
 }
 
 html {
-    font-size: 15px;
+    font-size: 16px;
 }
 
 body {
@@ -25,7 +25,7 @@ td {
     letter-spacing: 0.5px;
     text-align: center;
     font-family: '秋水書体';
-    line-height: 1.3rem;
+    line-height: 1.2rem;
 }
 
 .blank {
@@ -37,7 +37,7 @@ td {
 }
 
 .td-spacing > td.dot {
-    font-size: 1rem;
+    font-size: 14px;
 }
 
 .root {
@@ -93,7 +93,8 @@ td {
 /* font-face */
 @font-face {
     font-family: '秋水書体';
-    src: url('../fonts/QiushuiShotai.woff2');
+    src: url('../fonts/QiushuiShotai.woff2') format('woff2');
+    font-display: swap;
 }
 
 /* 滚动条 */
