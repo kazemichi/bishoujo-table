@@ -93,7 +93,7 @@ td {
 /* font-face */
 @font-face {
     font-family: '秋水書体';
-    src: url('../fonts/QiushuiShotai.woff2') format('woff2');
+    src: url('../fonts/QiushuiShotaiLite.woff2') format('woff2');
     font-display: swap;
 }
 
