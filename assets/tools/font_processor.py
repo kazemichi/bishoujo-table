@@ -53,7 +53,7 @@ def subset_and_convert_font(original_ttf, output_woff2, needed_chars):
 def main():
     # 配置参数
     original_font_path = 'QiushuiShotai.ttf'  # 原始TTF字体路径
-    output_font_path = 'QiushuiShotaiLite.woff2'  # 输出WOFF2字体路径
+    output_font_path = original_font_path.replacec('.ttf', 'Lite.woff2') # 输出WOFF2字体路径
 
     with open('table_used_characters.txt', 'r', encoding='utf-8') as f:
         needed_chars = f.read()
