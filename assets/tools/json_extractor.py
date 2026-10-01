@@ -1,6 +1,7 @@
 import json
 import os
 
+
 def extract_chars_from_values(obj, target_keys, chars_set):
     '''
     递归遍历JSON，提取指定键的值中的所有字符并添加到集合（自动去重）
@@ -22,13 +23,15 @@ def extract_chars_from_values(obj, target_keys, chars_set):
         for item in obj:
             extract_chars_from_values(item, target_keys, chars_set)
 
-def process_json_chars(input_path, output_path, target_keys=['cn', 'jp']):
+def process_json_chars(input_path, output_path, target_keys=None):
     '''
     处理JSON文件，提取指定键值中的字符并去重后保存
     :param input_path: 输入JSON文件路径
     :param output_path: 输出结果文件路径
     :param target_keys: 需要提取值的键名列表，默认为['cn', 'jp']
     '''
+    if target_keys is None:
+        target_keys = ['cn', 'jp']
     try:
         # 检查输入文件
         if not os.path.exists(input_path):
@@ -54,13 +57,13 @@ def process_json_chars(input_path, output_path, target_keys=['cn', 'jp']):
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(''.join(sorted_chars))
 
-        print(f'处理完成！')
+        print('处理完成！')
         print(f'提取并去重后的字符总数：{len(sorted_chars)}')
         print(f'结果已保存至：{output_path}')
         return True
 
     except Exception as e:
-        print(f'处理过程中发生错误：{str(e)}')
+        print(f'处理过程中发生错误：{e!s}')
         return False
 
 if __name__ == '__main__':

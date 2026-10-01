@@ -1,0 +1,1 @@
+pip install fonttools brotli --target=.\libs --upgrade

@@ -92,8 +92,8 @@ td {
 
 /* font-face */
 @font-face {
-    font-family: '秋水書体';
-    src: url('../fonts/QiushuiShotaiLite.woff2') format('woff2');
+    font-family: 'ScreenLite';
+    src: url('../fonts/ScreenLite.woff2') format('woff2');
     font-display: swap;
 }
 

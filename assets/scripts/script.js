@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * *将表格导出为图片*
+ * 将表格导出为图片
 */
 
 import { domToWebp } from 'https://unpkg.com/modern-screenshot'
@@ -76,7 +76,7 @@ const TableManager = (() => {
             <tr>
                 <td></td>
                 ${rows.map(char => char.tachie 
-                    ? `<td><img class="tachie-box" src="assets/tachie/${char.tachie}" alt="${char.jp}"></td>` 
+                    ? `<td><img class="tachie-box" src="assets/tachie/${char.tachie}" alt="${char.jp}" decoding="async"></td>` 
                     : '<td></td>'
                 ).join('')}
             </tr>

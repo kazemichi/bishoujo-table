@@ -1,22 +1,25 @@
-# pip install fonttools brotli
+import sys
+sys.path.append('libs')
 
-from fontTools.ttLib import TTFont
-from fontTools.subset import Subsetter
 import os
 
-def subset_and_convert_font(original_ttf, output_woff2, needed_chars):
-    '''优化的字体处理函数，过滤不必要的字体表以消除警告'''
-    try:
-        # 验证输入文件
-        if not os.path.exists(original_ttf):
-            print(f'错误：原始字体文件不存在 - {original_ttf}')
-            return False
+from fontTools.subset import Subsetter
+from fontTools.ttLib import TTFont
 
+
+def subset_and_convert_font(original_ttf, output_woff2, needed_chars):
+    try:
         # 加载字体
         font = TTFont(original_ttf)
 
+        # 修改字族名 nameID=1
+        font['name'].setName('ScreenLite', nameID=1, platformID=3, platEncID=1, langID=0x409)
+        # 修改全名 nameID=4
+        font['name'].setName('ScreenLite Regular', nameID=4, platformID=3, platEncID=1, langID=0x409)
+        # 修改 PostScript 名称 nameID=6
+        font['name'].setName('ScreenLite-Regular', nameID=6, platformID=3, platEncID=1, langID=0x409)
+
         # 定义需要保留的字体表（排除FFTM等不需要的表）
-        # 只保留渲染所需的核心表，减少文件大小并消除警告
         keep_tables = {
             'GDEF', 'GPOS', 'GSUB', 'cmap', 'cvt ', 'fpgm', 'glyf', 'head', 
             'hhea', 'hmtx', 'loca', 'maxp', 'name', 'post', 'prep', 'OS/2'
@@ -44,26 +47,21 @@ def subset_and_convert_font(original_ttf, output_woff2, needed_chars):
         print(f'字体处理完成: {original_ttf} -> {output_woff2}')
         print(f'文件大小减少: {reduction:.2f}% ({original_size} -> {new_size} 字节)')
 
-        return True
-
     except Exception as e:
         print(f'字体处理失败: {str(e)}')
         return False
 
 def main():
     # 配置参数
-    original_font_path = 'QiushuiShotai.ttf'  # 原始TTF字体路径
-    output_font_path = original_font_path.replacec('.ttf', 'Lite.woff2') # 输出WOFF2字体路径
+    original_font_path = 'QiushuiShotai.ttf'  # 原始 TTF 字体路径
+    output_font_path = 'ScreenLite.woff2' # 输出 WOFF2 字体路径
 
     with open('table_used_characters.txt', 'r', encoding='utf-8') as f:
         needed_chars = f.read()
     all_needed_chars = needed_chars + '●'
 
     # 处理字体
-    success = subset_and_convert_font(original_font_path, output_font_path, all_needed_chars)
-
-    if success:
-        print('字体优化完成！')
+    subset_and_convert_font(original_font_path, output_font_path, all_needed_chars)
 
 if __name__ == '__main__':
     main()
