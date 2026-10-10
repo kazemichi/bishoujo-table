@@ -5,7 +5,7 @@
 
 用语参考：[性風俗用語一覧 | WikiPedia](https://ja.wikipedia.org/wiki/性風俗用語一覧)
 
-   
+​    
 
 **Current Dependencies**
 
@@ -14,13 +14,13 @@
 <details>
     <summary>Removed dependencies</summary>
 
-    ~~[jQuery](https://jquery.com)~~
+    <del>[jQuery](https://jquery.com)</del>
     
-    ~~[dom-to-image-more](https://github.com/1904labs/dom-to-image-more)~~
+    <del>[dom-to-image-more](https://github.com/IDisposable/dom-to-image-more)</del>
     
-    ~~[FileSaver.js](https://github.com/eligrey/FileSaver.js)~~
+    <del>[FileSaver.js](https://github.com/eligrey/FileSaver.js)</del>
     
-    ~~[modern-screenshot](https://github.com/qq15725/modern-screenshot)~~
+    <del>[modern-screenshot](https://github.com/qq15725/modern-screenshot)</del>
     
     > These dependencies were removed during refactoring.
 </details>
