@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="./doc/renge.webp"/>
+    <img src="./docs/renge.webp"/>
     <h1>Bishoujo Table</h1>
 </div>
 
