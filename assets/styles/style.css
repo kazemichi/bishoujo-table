@@ -18,13 +18,12 @@ body {
 }
 
 td {
-    max-width: 120px;
-    min-width: 120px;
+    width: 120px;
     font-size: 17px;
     -webkit-text-stroke: 0.2px #333;
     letter-spacing: 0.5px;
     text-align: center;
-    font-family: '秋水書体';
+    font-family: 'ScreenLite';
     line-height: 1.2rem;
 }
 
@@ -48,7 +47,7 @@ td {
 .container {
     background-color: #FFF6F7;
     padding: 10px 0;
-    width: fit-content;
+    width: max-content;
 }
 
 .bishoujo-table {

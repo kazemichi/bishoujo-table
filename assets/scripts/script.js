@@ -1,52 +1,70 @@
 'use strict';
 
-/**
- * 将表格导出为图片
-*/
-
-import { domToWebp } from 'https://unpkg.com/modern-screenshot'
-
-document.querySelector('span.export-screenshot').addEventListener('click', async () => {
-    try {
-        const container = document.querySelector('div.container');
-        const dataUrl = await domToWebp(container, { scale: 1.5 });
-
-        const link = document.createElement('a');
-        link.download = 'bishoujo-table.webp';
-        link.href = dataUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    } catch (error) {
-        console.error('导出失败:', error);
-        alert('图片导出失败，请重试');
-    }
+// 常量
+const CONSTANTS = Object.freeze({
+    SAVE_FORMAT: 'webp',
+    SAVE_FILENAME: 'bishoujo-table',
+    SNAP_SCALE: 1.5
 });
 
 /**
- * *加载JSON数据并生成表格*
+ * 导出截图
+*/
+import { snapdom } from 'https://unpkg.com/@zumer/snapdom@latest/dist/snapdom.mjs';
+
+// DOM 缓存
+const captureContent = document.querySelector('div.container');
+const exportBtn = document.querySelector('span.export-screenshot');
+
+if (captureContent && exportBtn) {
+    exportBtn.addEventListener('click', async () => {
+        try {
+            const result = await snapdom(container, {
+                scale: CONSTANTS.SNAP_SCALE,
+                reconcile: true
+            });
+            // 直接下载图片
+            await result.download({
+                format: CONSTANTS.SAVE_FORMAT,
+                filename: `${CONSTANTS.SAVE_FILENAME}.${CONSTANTS.SAVE_FORMAT}`
+            });
+        } catch (error) {
+            console.error('导出失败:', error);
+            alert('图片导出失败，请重试。');
+        }
+    });
+}
+
+/**
+ * 读取 JSON 数据并生成表格
 */
 const TableManager = (() => {
+    /** @type {{tableFrame:null|object, characterHS:null|object, currentLang:'jp'|'cn'}} */
     const state = {
-        table_frame: null,
-        character_hs: null,
+        tableFrame: null,
+        characterHS: null,
         currentLang: 'jp'
     };
 
-    // 缓存DOM元素
+    // 缓存 DOM 元素
     const elements = {
         table: document.querySelector('table.bishoujo-table'),
-        langSwitch: document.querySelector('.lang-switch')
+        langSwitch: document.querySelector('span.lang-switch')
     };
 
-    // 加载JSON数据
+    /**
+     * 加载 JSON 数据
+     * @param {string} url
+     */
     async function loadJSON(url) {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`加载失败: ${url}`);
         return response.json();
     }
 
-    // 初始化表格
+    /**
+     * 初始化表格
+     */
     async function init() {
         try {
             const [frameData, hsData] = await Promise.all([
@@ -55,8 +73,8 @@ const TableManager = (() => {
             ]);
 
             Object.assign(state, {
-                table_frame: frameData,
-                character_hs: hsData
+                tableFrame: frameData,
+                characterHS: hsData
             });
 
             renderTable();
@@ -67,10 +85,12 @@ const TableManager = (() => {
         }
     }
 
-    // 渲染表格
+    /**
+     * 渲染表格
+     */
     function renderTable() {
-        const { row_characters: rows, col_types: columns } = state.table_frame;
-        const { character_hs, currentLang } = state;
+        const { rowCharacters: rows, colTypes: columns } = state.tableFrame;
+        const { characterHS, currentLang } = state;
 
         let tableHTML = `
             <tr>
@@ -93,8 +113,8 @@ const TableManager = (() => {
                     <td>${col[currentLang]}</td>
             `;
 
-            if (jpKey && character_hs[jpKey]) {
-                const colData = character_hs[jpKey];
+            if (jpKey && characterHS[jpKey]) {
+                const colData = characterHS[jpKey];
                 tableHTML += rows.map(char => 
                     colData[char.jp] === 1 
                         ? '<td class="dot">●</td>' 
@@ -110,14 +130,18 @@ const TableManager = (() => {
         elements.table.innerHTML = tableHTML;
     }
 
-    // 切换语言
+    /**
+     * 切换语言
+     */
     function switchLanguage() {
         state.currentLang = state.currentLang === 'jp' ? 'cn' : 'jp';
         renderTable();
         updateSwitchText();
     }
 
-    // 更新切换按钮文本
+    /**
+     * 更新切换按钮文本
+     */
     function updateSwitchText() {
         const isCN = state.currentLang === 'cn';
         elements.langSwitch.classList.toggle('cn', isCN);
@@ -127,7 +151,9 @@ const TableManager = (() => {
         `;
     }
 
-    // 事件监听
+    /**
+     * 绑定监听事件
+     */
     function setupEventListeners() {
         elements.langSwitch.addEventListener('click', switchLanguage);
     }
@@ -135,5 +161,5 @@ const TableManager = (() => {
     return { init };
 })();
 
-// 初始化表格管理器
+// 启动初始化
 TableManager.init();

@@ -1,17 +1,26 @@
-# Bishoujo Table
+<div align="center">
+    <img src="./doc/renge.avif"/>
+    <h1>Bishoujo Table</h1>
+</div>
 
-用语参考：[性風俗用語一覧|WikiPedia](https://ja.wikipedia.org/wiki/%E6%80%A7%E9%A2%A8%E4%BF%97%E7%94%A8%E8%AA%9E%E4%B8%80%E8%A6%A7)
+用语参考：[性風俗用語一覧 | WikiPedia](https://ja.wikipedia.org/wiki/性風俗用語一覧)
 
-​    
+   
 
-**Dependencies**
+**Current Dependencies**
 
-~~[jQuery](https://jquery.com)~~
+[snapDOM](https://github.com/zumerlab/snapdom)
 
-~~[dom-to-image-more](https://github.com/1904labs/dom-to-image-more)~~
+<details>
+    <summary>Removed dependencies</summary>
 
-~~[FileSaver.js](https://github.com/eligrey/FileSaver.js)~~
-
-[modern-screenshot](https://github.com/qq15725/modern-screenshot)
-
-~~[snapDOM](https://github.com/zumerlab/snapdom)~~
+    ~~[jQuery](https://jquery.com)~~
+    
+    ~~[dom-to-image-more](https://github.com/1904labs/dom-to-image-more)~~
+    
+    ~~[FileSaver.js](https://github.com/eligrey/FileSaver.js)~~
+    
+    ~~[modern-screenshot](https://github.com/qq15725/modern-screenshot)~~
+    
+    > These dependencies were removed during refactoring.
+</details>
