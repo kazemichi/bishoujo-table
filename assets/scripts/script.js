@@ -89,7 +89,7 @@ const TableManager = (() => {
      * 渲染表格
      */
     function renderTable() {
-        const { rowCharacters: rows, colTypes: columns } = state.tableFrame;
+        const { row_characters: rows, col_types: columns } = state.tableFrame;
         const { characterHS, currentLang } = state;
 
         let tableHTML = `
