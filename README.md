@@ -1,7 +1,8 @@
 <div align="center">
-    <img src="./doc/renge.avif"/>
+    <img src="./doc/renge.webp"/>
     <h1>Bishoujo Table</h1>
 </div>
+
 
 用语参考：[性風俗用語一覧 | WikiPedia](https://ja.wikipedia.org/wiki/性風俗用語一覧)
 
