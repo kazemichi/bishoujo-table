@@ -19,7 +19,7 @@ const exportBtn = document.querySelector('span.export-screenshot');
 if (captureContent && exportBtn) {
     exportBtn.addEventListener('click', async () => {
         try {
-            const result = await snapdom(container, {
+            const result = await snapdom(captureContent, {
                 scale: CONSTANTS.SNAP_SCALE,
                 reconcile: true
             });
